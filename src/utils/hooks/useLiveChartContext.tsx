@@ -9,7 +9,8 @@ const initialEvents: RandomEvent[] = Array.from(Array(50)).map((_, ix) => create
 const initialData: LiveChartState = {
   events: initialEvents,
   paused: false,
-  pausedEvents: []
+  pausedEvents: [],
+  editingCell: null
 };
 
 const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveChartState => {
@@ -30,7 +31,7 @@ const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveC
 
     case 'toggle_paused':
       if (state.paused) {
-        // Reprise : retourner en mode normal et ajouter tous les événements stockés
+        //retourner en mode normal et ajouter tous les événements stockés
         return {
           ...state,
           paused: false,
@@ -50,8 +51,14 @@ const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveC
         events: action.payload
       };
 
+    case 'edit_cell':
+      return {
+        ...state,
+        editingCell: action.payload
+      };
+
     default:
-      throw new Error(`Unhandled action type: ${(action as any).type}`);
+      throw new Error(`Unhandled action type: ${(action as LiveChartAction).type}`);
   }
 };
 

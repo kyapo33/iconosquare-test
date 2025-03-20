@@ -1,17 +1,10 @@
 import React, { FC } from 'react';
 import { useLiveTable } from '../utils/hooks/useLiveTable';
+import EditableInput from './EditableInput';
 
 const LiveTable: FC = () => {
-  const {
-    eventsFiltered,
-    editingCell,
-    editValue,
-    handleCellClick,
-    handleInputChange,
-    handleSave,
-    handleKeyPress,
-    nbTotalEvents
-  } = useLiveTable();
+  const { eventsFiltered, editingCell, editValue, handleCellClick, handleInputChange, handleSave, handleKeyPress } =
+    useLiveTable();
 
   return (
     <div className='bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl shadow-lg overflow-hidden my-8 border border-indigo-100'>
@@ -48,56 +41,30 @@ const LiveTable: FC = () => {
                   </div>
                 </td>
                 <td className='px-6 py-4 whitespace-nowrap'>
-                  <div className='text-sm font-medium transition-all duration-150 h-10 flex items-center justify-center'>
-                    {editingCell && editingCell.index === event.index && editingCell.field === 'value1' ? (
-                      <div className='w-24 h-10 flex items-center'>
-                        <input
-                          type='number'
-                          value={editValue}
-                          onChange={handleInputChange}
-                          onKeyDown={handleKeyPress}
-                          onBlur={handleSave}
-                          autoFocus
-                          className='w-full p-2 border-0 bg-white ring-2 ring-indigo-400 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 h-10'
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        className='w-24 h-10 flex items-center cursor-pointer'
-                        onClick={(e) => handleCellClick(e, event.index, 'value1', event.value1)}
-                      >
-                        <span className='px-3 py-2 rounded-lg bg-gradient-to-r hover:from-indigo-100 hover:to-purple-100 inline-block text-indigo-700 font-medium border border-indigo-200 shadow-sm w-full text-center'>
-                          {event.value1.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                  <EditableInput
+                    isEditing={!!(editingCell && editingCell.index === event.index && editingCell.field === 'value1')}
+                    value={event.value1}
+                    editValue={editValue}
+                    index={event.index}
+                    field='value1'
+                    onCellClick={handleCellClick}
+                    onInputChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
+                    onSave={handleSave}
+                  />
                 </td>
                 <td className='px-6 py-4 whitespace-nowrap'>
-                  <div className='text-sm font-medium transition-all duration-150 h-10 flex items-center justify-center'>
-                    {editingCell && editingCell.index === event.index && editingCell.field === 'value2' ? (
-                      <div className='w-24 h-10 flex items-center'>
-                        <input
-                          type='number'
-                          value={editValue}
-                          onChange={handleInputChange}
-                          onKeyDown={handleKeyPress}
-                          onBlur={handleSave}
-                          autoFocus
-                          className='w-full p-2 border-0 bg-white ring-2 ring-indigo-400 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 h-10'
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        className='w-24 h-10 flex items-center cursor-pointer'
-                        onClick={(e) => handleCellClick(e, event.index, 'value2', event.value2)}
-                      >
-                        <span className='px-3 py-2 rounded-lg bg-gradient-to-r hover:from-indigo-100 hover:to-purple-100 inline-block text-indigo-700 font-medium border border-indigo-200 shadow-sm w-full text-center'>
-                          {event.value2.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                  <EditableInput
+                    isEditing={!!(editingCell && editingCell.index === event.index && editingCell.field === 'value2')}
+                    value={event.value2}
+                    editValue={editValue}
+                    index={event.index}
+                    field='value2'
+                    onCellClick={handleCellClick}
+                    onInputChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
+                    onSave={handleSave}
+                  />
                 </td>
               </tr>
             ))}

@@ -1,15 +1,9 @@
 import React, { FC } from 'react';
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer } from 'recharts';
-import { useLiveChartContext } from '../utils/hooks/useLiveChartContext';
+import useLiveChart from '../utils/hooks/useLiveChart';
 
 const LiveChart: FC = () => {
-  const { data, dispatch } = useLiveChartContext();
-  const nbTotalEvents = data?.events?.length;
-  const eventsFiltered = data.events.slice(nbTotalEvents - 20, nbTotalEvents);
-
-  const handleTogglePause = () => {
-    dispatch({ type: 'toggle_paused' });
-  };
+  const { data, eventsFiltered, handleTogglePause, handleChartClick } = useLiveChart();
 
   return (
     <div className='mb-8'>
@@ -24,7 +18,7 @@ const LiveChart: FC = () => {
       </div>
       <ResponsiveContainer height={250}>
         <AreaChart
-          onClick={(e) => console.log(e.activeTooltipIndex)}
+          onClick={(event) => handleChartClick(event)}
           data={eventsFiltered}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
@@ -63,7 +57,5 @@ const LiveChart: FC = () => {
     </div>
   );
 };
-
-LiveChart.propTypes = {};
 
 export default LiveChart;

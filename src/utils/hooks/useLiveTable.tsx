@@ -1,21 +1,34 @@
-import { useState } from 'react';
-import { EditingCell, ValueField } from '../../types';
+import { useState, useEffect } from 'react';
+import { ValueField } from '../../types';
 import { useLiveChartContext } from './useLiveChartContext';
 
 export const useLiveTable = () => {
   const { data, dispatch } = useLiveChartContext();
-  const [editingCell, setEditingCell] = useState<EditingCell | null>(null);
   const [editValue, setEditValue] = useState<string>('');
 
   const nbTotalEvents = data?.events?.length;
   const eventsFiltered = data.events.slice(nbTotalEvents - 20, nbTotalEvents);
+
+  // Réagir au changement de cellule en édition (venant du contexte)
+  useEffect(() => {
+    if (data.editingCell) {
+      const eventToEdit = data.events.find((event) => event.index === data.editingCell?.index);
+      if (eventToEdit) {
+        setEditValue(eventToEdit[data.editingCell.field].toString());
+      }
+    }
+  }, [data.editingCell, data.events]);
 
   const handleCellClick = (event: React.MouseEvent, index: number, field: ValueField, value: number) => {
     if (!data.paused) {
       dispatch({ type: 'toggle_paused' });
     }
 
-    setEditingCell({ index, field });
+    dispatch({
+      type: 'edit_cell',
+      payload: { index, field }
+    });
+
     setEditValue(value.toString());
   };
 
@@ -24,19 +37,19 @@ export const useLiveTable = () => {
   };
 
   const handleSave = () => {
-    if (!editingCell) return;
+    if (!data.editingCell) return;
 
     const numValue = Number(editValue);
     if (isNaN(numValue)) {
-      setEditingCell(null);
+      dispatch({ type: 'edit_cell', payload: null });
       return;
     }
 
     const updatedEvents = data.events.map((event) => {
-      if (event.index === editingCell.index) {
+      if (event.index === data.editingCell?.index) {
         return {
           ...event,
-          [editingCell.field]: numValue
+          [data.editingCell.field]: numValue
         };
       }
       return event;
@@ -47,7 +60,7 @@ export const useLiveTable = () => {
       payload: updatedEvents
     });
 
-    setEditingCell(null);
+    dispatch({ type: 'edit_cell', payload: null });
 
     if (data.paused && data.pausedEvents.length === 0) {
       dispatch({ type: 'toggle_paused' });
@@ -58,7 +71,7 @@ export const useLiveTable = () => {
     if (e.key === 'Enter') {
       handleSave();
     } else if (e.key === 'Escape') {
-      setEditingCell(null);
+      dispatch({ type: 'edit_cell', payload: null });
 
       if (data.paused && data.pausedEvents.length === 0) {
         dispatch({ type: 'toggle_paused' });
@@ -67,7 +80,7 @@ export const useLiveTable = () => {
   };
 
   return {
-    editingCell,
+    editingCell: data.editingCell,
     editValue,
     handleCellClick,
     handleInputChange,
