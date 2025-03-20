@@ -3,28 +3,11 @@ import { useLiveTable } from '../utils/hooks/useLiveTable';
 import EditableInput from './EditableInput';
 
 const LiveTable: FC = () => {
-  const {
-    eventsFiltered,
-    editingCell,
-    editValue,
-    handleCellClick,
-    handleInputChange,
-    handleSave,
-    handleKeyPress,
-    handleReset
-  } = useLiveTable();
+  const { eventsFiltered, editingCell, editValue, handleCellClick, handleInputChange, handleSave, handleKeyPress } =
+    useLiveTable();
 
   return (
     <div className='bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl shadow-lg overflow-hidden my-8 border border-indigo-100'>
-      <div className='flex justify-between items-center px-6 py-3 bg-white'>
-        <h2 className='text-xl font-semibold text-indigo-800'>Data Table</h2>
-        <button
-          onClick={handleReset}
-          className='px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors'
-        >
-          Restore Original Values
-        </button>
-      </div>
       <div className='overflow-x-auto'>
         <table className='min-w-full'>
           <thead>

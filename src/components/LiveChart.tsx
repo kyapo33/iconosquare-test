@@ -1,21 +1,19 @@
 import React, { FC } from 'react';
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import useLiveChart from '../utils/hooks/useLiveChart';
+import TimeControls from './TimeControls';
 
 const LiveChart: FC = () => {
-  const { data, eventsFiltered, handleTogglePause, handleChartClick } = useLiveChart();
+  const { eventsFiltered, handleChartClick } = useLiveChart();
 
   return (
     <div className='mb-8'>
       <div className='flex justify-between items-center mb-4'>
         <h2 className='text-xl font-semibold'>Live Chart</h2>
-        <button
-          onClick={handleTogglePause}
-          className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors'
-        >
-          {data.paused ? 'Play' : 'Pause'}
-        </button>
       </div>
+
+      <TimeControls />
+
       <ResponsiveContainer height={250}>
         <AreaChart
           onClick={(event) => handleChartClick(event)}

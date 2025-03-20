@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { ValueField } from '../../types';
 import { useLiveChartContext } from './useLiveChartContext';
+import { useTimeControls } from './useTimeControls';
 
 export const useLiveTable = () => {
   const { data, dispatch } = useLiveChartContext();
   const [editValue, setEditValue] = useState<string>('');
 
-  const nbTotalEvents = data?.events?.length;
-  const eventsFiltered = data.events.slice(nbTotalEvents - 20, nbTotalEvents);
+  const { eventsFiltered } = useTimeControls();
 
   // Réagir au changement de cellule en édition (venant du contexte)
   useEffect(() => {
@@ -79,14 +79,6 @@ export const useLiveTable = () => {
     }
   };
 
-  // Add handler for resetting values
-  const handleReset = () => {
-    if (!data.paused) {
-      dispatch({ type: 'toggle_paused' });
-    }
-    dispatch({ type: 'reset_values' });
-  };
-
   return {
     editingCell: data.editingCell,
     editValue,
@@ -94,8 +86,6 @@ export const useLiveTable = () => {
     handleInputChange,
     handleSave,
     handleKeyPress,
-    nbTotalEvents,
-    eventsFiltered,
-    handleReset
+    eventsFiltered
   };
 };

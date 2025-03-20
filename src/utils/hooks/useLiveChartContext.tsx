@@ -11,7 +11,9 @@ const initialData: LiveChartState = {
   originalEvents: initialEvents.map((event) => ({ ...event })),
   paused: false,
   pausedEvents: [],
-  editingCell: null
+  editingCell: null,
+  timeIndex: 50, // Commence avec tous les événements visibles
+  maxTimeIndex: 20 // Afficher 20 événements max à la fois
 };
 
 const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveChartState => {
@@ -26,22 +28,32 @@ const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveC
       }
 
       const newEvent = action.payload;
+      // Si on n'est pas en navigation temporelle (timeIndex à la fin), on augmente automatiquement
+      const newTimeIndex = state.timeIndex === state.events.length ? state.timeIndex + 1 : state.timeIndex;
+
       return {
         ...state,
         events: [...state.events, newEvent],
-        originalEvents: [...state.originalEvents, { ...newEvent }]
+        originalEvents: [...state.originalEvents, { ...newEvent }],
+        timeIndex: newTimeIndex
       };
 
     case 'toggle_paused':
       if (state.paused) {
         //retourner en mode normal et ajouter tous les événements stockés
         const allPausedEvents = [...state.pausedEvents];
+
+        // Toujours mettre à jour timeIndex à la fin quand on sort de pause
+        // Ce qui garantit qu'on voit toujours les données les plus récentes
+        const newTimeIndex = state.events.length + allPausedEvents.length;
+
         return {
           ...state,
           paused: false,
           events: [...state.events, ...allPausedEvents], // Ajouter tous les événements en une fois
           originalEvents: [...state.originalEvents, ...allPausedEvents.map((event) => ({ ...event }))],
-          pausedEvents: [] // Vider le buffer après avoir ajouté les événements
+          pausedEvents: [], // Vider le buffer après avoir ajouté les événements
+          timeIndex: newTimeIndex
         };
       } else {
         return {
@@ -67,6 +79,14 @@ const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveC
         ...state,
         events: state.originalEvents.map((event) => ({ ...event })),
         editingCell: null
+      };
+
+    case 'go_to_time':
+      const newTime = Math.max(state.maxTimeIndex, Math.min(action.payload, state.events.length));
+      return {
+        ...state,
+        timeIndex: newTime,
+        paused: true
       };
 
     default:
