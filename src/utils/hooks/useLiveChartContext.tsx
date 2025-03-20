@@ -8,6 +8,7 @@ const initialEvents: RandomEvent[] = Array.from(Array(50)).map((_, ix) => create
 
 const initialData: LiveChartState = {
   events: initialEvents,
+  originalEvents: initialEvents.map((event) => ({ ...event })),
   paused: false,
   pausedEvents: [],
   editingCell: null
@@ -24,18 +25,22 @@ const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveC
         };
       }
 
+      const newEvent = action.payload;
       return {
         ...state,
-        events: [...state.events, action.payload]
+        events: [...state.events, newEvent],
+        originalEvents: [...state.originalEvents, { ...newEvent }]
       };
 
     case 'toggle_paused':
       if (state.paused) {
         //retourner en mode normal et ajouter tous les événements stockés
+        const allPausedEvents = [...state.pausedEvents];
         return {
           ...state,
           paused: false,
-          events: [...state.events, ...state.pausedEvents], // Ajouter tous les événements en une fois
+          events: [...state.events, ...allPausedEvents], // Ajouter tous les événements en une fois
+          originalEvents: [...state.originalEvents, ...allPausedEvents.map((event) => ({ ...event }))],
           pausedEvents: [] // Vider le buffer après avoir ajouté les événements
         };
       } else {
@@ -55,6 +60,13 @@ const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveC
       return {
         ...state,
         editingCell: action.payload
+      };
+
+    case 'reset_values':
+      return {
+        ...state,
+        events: state.originalEvents.map((event) => ({ ...event })),
+        editingCell: null
       };
 
     default:

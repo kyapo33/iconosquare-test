@@ -79,6 +79,14 @@ export const useLiveTable = () => {
     }
   };
 
+  // Add handler for resetting values
+  const handleReset = () => {
+    if (!data.paused) {
+      dispatch({ type: 'toggle_paused' });
+    }
+    dispatch({ type: 'reset_values' });
+  };
+
   return {
     editingCell: data.editingCell,
     editValue,
@@ -87,6 +95,7 @@ export const useLiveTable = () => {
     handleSave,
     handleKeyPress,
     nbTotalEvents,
-    eventsFiltered
+    eventsFiltered,
+    handleReset
   };
 };

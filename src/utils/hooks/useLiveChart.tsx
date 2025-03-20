@@ -28,11 +28,19 @@ const useLiveChart = () => {
     }
   };
 
+  const handleReset = () => {
+    if (!data.paused) {
+      dispatch({ type: 'toggle_paused' });
+    }
+    dispatch({ type: 'reset_values' });
+  };
+
   return {
     data,
     eventsFiltered,
     handleTogglePause,
-    handleChartClick
+    handleChartClick,
+    handleReset
   };
 };
 

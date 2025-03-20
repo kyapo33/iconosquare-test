@@ -14,6 +14,7 @@ export type ValueField = 'value1' | 'value2';
 
 export interface LiveChartState {
   events: RandomEvent[];
+  originalEvents: RandomEvent[]; // Revenir à la méthode avec originalEvents
   paused: boolean;
   pausedEvents: RandomEvent[]; 
   editingCell: EditingCell | null;
@@ -23,7 +24,8 @@ export type LiveChartAction =
   | { type: 'new_event'; payload: RandomEvent }
   | { type: 'toggle_paused' }
   | { type: 'update_events'; payload: RandomEvent[] }
-  | { type: 'edit_cell'; payload: EditingCell | null };
+  | { type: 'edit_cell'; payload: EditingCell | null }
+  | { type: 'reset_values' };
 
 export interface LiveChartContextType {
   data: LiveChartState;
