@@ -3,11 +3,25 @@ import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContai
 import { useLiveChartContext } from '../utils/hooks/useLiveChartContext';
 
 const LiveChart: FC = () => {
-  const { data } = useLiveChartContext();
+  const { data, dispatch } = useLiveChartContext();
   const nbTotalEvents = data?.events?.length;
   const eventsFiltered = data.events.slice(nbTotalEvents - 20, nbTotalEvents);
+
+  const handleTogglePause = () => {
+    dispatch({ type: 'toggle_paused' });
+  };
+
   return (
     <div className='mb-8'>
+      <div className='flex justify-between items-center mb-4'>
+        <h2 className='text-xl font-semibold'>Live Chart</h2>
+        <button
+          onClick={handleTogglePause}
+          className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors'
+        >
+          {data.paused ? 'Play' : 'Pause'}
+        </button>
+      </div>
       <ResponsiveContainer height={250}>
         <AreaChart
           onClick={(e) => console.log(e.activeTooltipIndex)}

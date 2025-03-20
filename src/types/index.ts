@@ -7,12 +7,15 @@ export interface RandomEvent {
 
 export interface LiveChartState {
   events: RandomEvent[];
+  paused: boolean;
 }
 
-export type LiveChartAction = { type: 'new_event'; payload: RandomEvent };
+export type LiveChartAction = 
+  | { type: 'new_event'; payload: RandomEvent }
+  | { type: 'toggle_paused' };
   
-  export interface LiveChartContextType {
-    data: LiveChartState;
-    dispatch: React.Dispatch<LiveChartAction>;
-  } 
+export interface LiveChartContextType {
+  data: LiveChartState;
+  dispatch: React.Dispatch<LiveChartAction>;
+} 
   

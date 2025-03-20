@@ -7,17 +7,27 @@ const LiveChartContext = createContext<LiveChartContextType | undefined>(undefin
 const initialEvents: RandomEvent[] = Array.from(Array(50)).map((_, ix) => createRandomEvent(ix));
 
 const initialData: LiveChartState = {
-  events: initialEvents
+  events: initialEvents,
+  paused: false
 };
 
 const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveChartState => {
   switch (action.type) {
     case 'new_event':
+      if (state.paused) {
+        return state;
+      }
       return {
+        ...state,
         events: [...state.events, action.payload]
       };
+    case 'toggle_paused':
+      return {
+        ...state,
+        paused: !state.paused
+      };
     default: {
-      throw new Error(`Unhandled action type: ${action.type}`);
+      throw new Error(`Unhandled action type: ${(action as any).type}`);
     }
   }
 };
