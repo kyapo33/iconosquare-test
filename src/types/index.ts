@@ -5,6 +5,13 @@ export interface RandomEvent {
   comment: string;
 }
 
+export interface EditingCell {
+    index: number;
+    field: ValueField;
+  }
+
+export type ValueField = 'value1' | 'value2';
+
 export interface LiveChartState {
   events: RandomEvent[];
   paused: boolean;
@@ -12,7 +19,8 @@ export interface LiveChartState {
 
 export type LiveChartAction = 
   | { type: 'new_event'; payload: RandomEvent }
-  | { type: 'toggle_paused' };
+  | { type: 'toggle_paused' }
+  | { type: 'update_events'; payload: RandomEvent[] };
   
 export interface LiveChartContextType {
   data: LiveChartState;
