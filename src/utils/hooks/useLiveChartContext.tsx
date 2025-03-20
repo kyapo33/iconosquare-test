@@ -52,7 +52,7 @@ const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveC
           paused: false,
           events: [...state.events, ...allPausedEvents], // Ajouter tous les événements en une fois
           originalEvents: [...state.originalEvents, ...allPausedEvents.map((event) => ({ ...event }))],
-          pausedEvents: [], // Vider le buffer après avoir ajouté les événements
+          pausedEvents: [], // Vider le tableau après avoir ajouté les événements
           timeIndex: newTimeIndex
         };
       } else {
