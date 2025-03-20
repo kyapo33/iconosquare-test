@@ -15,6 +15,7 @@ export type ValueField = 'value1' | 'value2';
 export interface LiveChartState {
   events: RandomEvent[];
   paused: boolean;
+  pausedEvents: RandomEvent[]; // Buffer for events received while paused
 }
 
 export type LiveChartAction = 

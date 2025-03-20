@@ -8,32 +8,50 @@ const initialEvents: RandomEvent[] = Array.from(Array(50)).map((_, ix) => create
 
 const initialData: LiveChartState = {
   events: initialEvents,
-  paused: false
+  paused: false,
+  pausedEvents: []
 };
 
 const liveChartReducer = (state: LiveChartState, action: LiveChartAction): LiveChartState => {
   switch (action.type) {
     case 'new_event':
       if (state.paused) {
-        return state;
+        // En mode pause, stocker l'événement pour plus tard
+        return {
+          ...state,
+          pausedEvents: [...state.pausedEvents, action.payload]
+        };
       }
+
       return {
         ...state,
         events: [...state.events, action.payload]
       };
+
     case 'toggle_paused':
-      return {
-        ...state,
-        paused: !state.paused
-      };
+      if (state.paused) {
+        // Reprise : retourner en mode normal et ajouter tous les événements stockés
+        return {
+          ...state,
+          paused: false,
+          events: [...state.events, ...state.pausedEvents], // Ajouter tous les événements en une fois
+          pausedEvents: [] // Vider le buffer après avoir ajouté les événements
+        };
+      } else {
+        return {
+          ...state,
+          paused: true
+        };
+      }
+
     case 'update_events':
       return {
         ...state,
         events: action.payload
       };
-    default: {
+
+    default:
       throw new Error(`Unhandled action type: ${(action as any).type}`);
-    }
   }
 };
 
@@ -43,6 +61,7 @@ interface LiveChartProviderProps {
 
 const LiveChartProvider: React.FC<LiveChartProviderProps> = ({ children }) => {
   const [data, dispatch] = useReducer(liveChartReducer, initialData);
+
   return (
     <LiveChartContext.Provider
       value={{

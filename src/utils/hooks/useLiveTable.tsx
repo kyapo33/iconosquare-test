@@ -11,6 +11,10 @@ export const useLiveTable = () => {
   const eventsFiltered = data.events.slice(nbTotalEvents - 20, nbTotalEvents);
 
   const handleCellClick = (event: React.MouseEvent, index: number, field: ValueField, value: number) => {
+    if (!data.paused) {
+      dispatch({ type: 'toggle_paused' });
+    }
+
     setEditingCell({ index, field });
     setEditValue(value.toString());
   };
@@ -44,6 +48,10 @@ export const useLiveTable = () => {
     });
 
     setEditingCell(null);
+
+    if (data.paused && data.pausedEvents.length === 0) {
+      dispatch({ type: 'toggle_paused' });
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -51,6 +59,10 @@ export const useLiveTable = () => {
       handleSave();
     } else if (e.key === 'Escape') {
       setEditingCell(null);
+
+      if (data.paused && data.pausedEvents.length === 0) {
+        dispatch({ type: 'toggle_paused' });
+      }
     }
   };
 
